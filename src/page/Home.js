@@ -1,9 +1,10 @@
 import React from 'react';
+import TodoSec from '../component/TodoSec';
 
 const Home = () => {
     return (
         <div>
-            Home
+            <TodoSec/>
         </div>
     );
 };
