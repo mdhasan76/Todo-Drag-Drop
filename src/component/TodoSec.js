@@ -1,13 +1,24 @@
-import React from 'react';
-import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai"
+import React, { useState } from 'react';
+import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
 
 const TodoSec = () => {
-    return (<div className='w-[1152px] p-7 '>
+    const [todoInput, setTodoInput] = useState("");
+    const [showInput, setShowInput] = useState(false);
 
-        <div className='flex gap-2 overflow-x-auto'>
-            <div className='w-[350px] h-[446px] p-3 bg-[#f6f8fa] border border-gray-200 rounded-lg relative'>
+    //Get the todo data 
+    const handleTodoSubmit = (e) => {
+        e.preventDefault();
+        setShowInput(false)
+        console.log("submit", todoInput)
+        e.target.reset()
+    }
+
+    return (<div className='w-[1152px] p-7 relative'>
+        <div className='flex gap-2 '>
+
+            <div className='min-w-[350px] min-h-[70vh] p-3 bg-[#f6f8fa] border border-gray-200 rounded-lg relative'>
                 <div>
-                    <div className='flex justify-between'>
+                    <div className='flex justify-between items-center'>
                         <div className='flex items-center'>
                             <div className='h-4 w-4  bg-[#bf3989] rounded-full mr-2'></div>
                             <p className='mr-2 text-lg font-semibold'>Todo</p>
@@ -21,12 +32,12 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
                 <div className='absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
-                    <p className='p-3'><AiOutlinePlus className='inline-block' /> Add item</p>
+                    <button onClick={() => setShowInput(true)} className='p-3 w-full text-left'><AiOutlinePlus className='inline-block' /> Add item</button>
                 </div>
             </div>
 
             {/* card 2 */}
-            <div className='w-[350px] h-[446px] p-3 bg-[#f6f8fa] border border-gray-200 rounded-lg relative'>
+            <div className='min-w-[350px] p-3 bg-[#f6f8fa] border border-gray-200 rounded-lg relative'>
                 <div>
                     <div className='flex justify-between'>
                         <div className='flex items-center'>
@@ -43,12 +54,12 @@ const TodoSec = () => {
                     </p>
                 </div>
                 <div className='absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
-                    <p className='p-3'><AiOutlinePlus className='inline-block' /> Add item</p>
+                    <button onClick={() => setShowInput(true)}  className='p-3 w-full text-left'><AiOutlinePlus className='inline-block' /> Add item</button>
                 </div>
             </div>
 
             {/* card 3 */}
-            <div className='w-[350px] h-[446px] p-3 bg-[#f6f8fa] border border-gray-200 rounded-lg relative'>
+            <div className='min-w-[350px] p-3 bg-[#f6f8fa] border border-gray-200 rounded-lg relative'>
                 <div>
                     <div className='flex justify-between'>
                         <div className='flex items-center'>
@@ -66,13 +77,19 @@ const TodoSec = () => {
 
 
                 <div className='absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
-                    <p className='p-3'><AiOutlinePlus className='inline-block' /> Add item</p>
+                    <button onClick={() => setShowInput(true)} className='p-3 w-full text-left'><AiOutlinePlus className='inline-block' /> Add item</button>
                 </div>
             </div>
             <div className='p-3 bg-[#f6f8fa] h-10 border border-gray-200 rounded-lg grid place-content-center'>
                 <AiOutlinePlus />
             </div>
         </div>
+        <form onSubmit={handleTodoSubmit} className={`${showInput  ?  'block' : 'hidden' }  duration-300 absolute w-full bottom-9 flex border-2 border-sky-700 rounded-lg`}>
+            <div className='p-3 bg-[#f6f8fa] border border-gray-200 rounded-tl-lg rounded-bl-lg grid place-items-center'>
+            <AiOutlinePlus />
+            </div>
+            <input className='w-full rounded-br-lg rounded-tr-lg outline-none p-3 bg-[#f6f8fa]' type="text" onChange={(e) => setTodoInput(e.target.value)} placeholder='Start typing to create a draft, or type # to select a repository' />
+        </form>
     </div>
     );
 };
