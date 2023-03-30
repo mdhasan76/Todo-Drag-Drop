@@ -23,6 +23,7 @@ const AuthProvider = ({children}) => {
 
     //Google Sign in
     const googleSignIn = () =>{
+        setLoading(true)
         return signInWithPopup(auth, googleAuth)
     }
 
@@ -41,7 +42,7 @@ const AuthProvider = ({children}) => {
         }
     },[])
 
-    const contexDataWraper = {createNewUser, logOutUser, loginUser, googleSignIn, user, loading}
+    const contexDataWraper = {createNewUser, logOutUser, loginUser, googleSignIn, user,setUser, loading}
     return (
         <AuthContext.Provider value={contexDataWraper}>
             {

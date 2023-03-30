@@ -42,16 +42,17 @@ const Header = () => {
                     </ul>
                 </div>
                 <div className="navbar-end">
-                    {
-                        user ?
-                       <button onClick={logOut} className='btn'>LogOut</button> : <Link to="/login" className="btn" >Login</Link>
-                    }
-                    <div className='ml-3'>
+                <div className='ml-3'>
                         {
                             user &&
-                            <img src={user?.photoURL} alt=""/>
+                            <img src={user?.photoURL} className="h-10 w-10 rounded-full" alt=""/>
                         }
                     </div>
+                    {
+                        user ?
+                       <button onClick={logOut} className='btn ml-3'>LogOut</button> : <Link to="/login" className="btn" >Login</Link>
+                    }
+                    
                 </div>
             </div>
         </div>
