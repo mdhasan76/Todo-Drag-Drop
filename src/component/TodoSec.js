@@ -1,10 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
+import { AuthContext } from '../routes/AuthProvider';
 
 const TodoSec = () => {
     const [todoInput, setTodoInput] = useState("");
     const [showInput, setShowInput] = useState(false);
-    const inputRef = useRef(null)
+    const inputRef = useRef(null);
+    const {} = useContext(AuthContext);
+
     //Get the todo data 
     const handleTodoSubmit = (e) => {
         e.preventDefault();
@@ -13,23 +16,22 @@ const TodoSec = () => {
         e.target.reset()
     }
 
+    // handle outside click for hidden the input
     useEffect(() => {
-        // Add event listener to document
         document.addEventListener('mousedown', handleClickOutside);
+
         return () => {
-          // Remove event listener from document
           document.removeEventListener('mousedown', handleClickOutside);
         };
       }, []);
+      
       const handleClickOutside = (event) => {
-        // If the clicked element is not within the ref element, call your event handler
         if (inputRef.current && !inputRef.current.contains(event.target)) {
           handleOutsideClick();
         }
       };
     
       const handleOutsideClick = () => {
-        // Do something when clicking outside the ref element
         console.log('Clicked outside the element');
         setShowInput(false)
       };
