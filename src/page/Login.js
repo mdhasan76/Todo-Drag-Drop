@@ -1,11 +1,12 @@
-import React, { useContext, useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import React, { useContext} from 'react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../routes/AuthProvider';
 
 const Login = () => {
     const { googleSignIn, setUser,loginUser } = useContext(AuthContext);
-    const [error, setError] = useState("")
-    const navigate = useNavigate()
+    const location = useLocation();
+    const navigate = useNavigate();
+    let from = location?.state?.from?.pathname || '/';
 
     //Google LogIn
     const googleHandle = () => {
@@ -14,7 +15,7 @@ const Login = () => {
                 if(res.user.email){
                     setUser(res.user);
                     console.log(res.user);
-                    navigate("/")
+                    <Navigate to="/"/>
                 }
             })
             .catch(err => console.log(err))
@@ -28,11 +29,9 @@ const Login = () => {
         // console.log(email, password);
         loginUser(email, password)
         .then(res => {
-            if(res.user.email){
                 setUser(res.user)
+                navigate(from, { replace: true })
                 e.target.reset()
-                navigate("/")
-            }
 
         })
         .catch(err => {
