@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
 
 const TodoSec = () => {
     const [todoInput, setTodoInput] = useState("");
     const [showInput, setShowInput] = useState(false);
-
+    const inputRef = useRef(null)
     //Get the todo data 
     const handleTodoSubmit = (e) => {
         e.preventDefault();
@@ -12,6 +12,27 @@ const TodoSec = () => {
         console.log("submit", todoInput)
         e.target.reset()
     }
+
+    useEffect(() => {
+        // Add event listener to document
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+          // Remove event listener from document
+          document.removeEventListener('mousedown', handleClickOutside);
+        };
+      }, []);
+      const handleClickOutside = (event) => {
+        // If the clicked element is not within the ref element, call your event handler
+        if (inputRef.current && !inputRef.current.contains(event.target)) {
+          handleOutsideClick();
+        }
+      };
+    
+      const handleOutsideClick = () => {
+        // Do something when clicking outside the ref element
+        console.log('Clicked outside the element');
+        setShowInput(false)
+      };
 
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
@@ -84,7 +105,7 @@ const TodoSec = () => {
                 <AiOutlinePlus />
             </div>
         </div>
-        <form onSubmit={handleTodoSubmit} className={`${showInput  ?  'block' : 'hidden' }  duration-300 absolute w-full bottom-9 flex border-2 border-sky-700 rounded-lg`}>
+        <form ref={inputRef} onSubmit={handleTodoSubmit} className={`${showInput  ?  'block' : 'hidden' }  duration-300 absolute w-full bottom-9 flex border-2 border-sky-700 rounded-lg`}>
             <div className='p-3 bg-[#f6f8fa] border border-gray-200 rounded-tl-lg rounded-bl-lg grid place-items-center'>
             <AiOutlinePlus />
             </div>
