@@ -64,86 +64,120 @@ const TodoSec = () => {
     }
 
     //left arrow btn handler
-    const handleLeftArrow = (data) =>{
-        if(data.category === "in-progress"){
+    const handleLeftArrow = (data) => {
+        if (data.category === "in-progress") {
             const updatedArray = todoList.map(item => {
                 if (item.text === data.text) {
-                  return { ...item, category: 'todo' };
+                    return { ...item, category: 'todo' };
                 }
                 return item;
-              });
-              setTodoList(updatedArray);
-              filteredTodo(updatedArray);
+            });
+            setTodoList(updatedArray);
+            filteredTodo(updatedArray);
         }
-        else{
+        else {
             const updatedArray = todoList.map(item => {
                 if (item.text === data.text) {
-                  return { ...item, category: 'in-progress' };
+                    return { ...item, category: 'in-progress' };
                 }
                 return item;
-              });
-              setTodoList(updatedArray);
-              filteredTodo(updatedArray);
+            });
+            setTodoList(updatedArray);
+            filteredTodo(updatedArray);
         }
     }
 
     //right arrow btn handler
-    const handleRightArrow = (data) =>{
-        if(data.category === "todo"){
+    const handleRightArrow = (data) => {
+        if (data.category === "todo") {
             const updatedArray = todoList.map(item => {
                 if (item.text === data.text) {
-                  return { ...item, category: 'in-progress' };
+                    return { ...item, category: 'in-progress' };
                 }
                 return item;
-              });
-              setTodoList(updatedArray);
-              filteredTodo(updatedArray);
+            });
+            setTodoList(updatedArray);
+            filteredTodo(updatedArray);
         }
-        else{
+        else {
             const updatedArray = todoList.map(item => {
                 if (item.text === data.text) {
-                  return { ...item, category: 'done' };
+                    return { ...item, category: 'done' };
                 }
                 return item;
-              });
-              setTodoList(updatedArray);
-              filteredTodo(updatedArray);
+            });
+            setTodoList(updatedArray);
+            filteredTodo(updatedArray);
         }
     }
 
-    const BorderCompo = () =>{
+    const BorderCompo = () => {
         return <div className='h-1 bg-indigo-700 w-full rounded-bl-lg rounded-br-lg'></div>
     }
 
     // Drag and Drop Feature Functionality
-    const dragItem = useRef();
-    const dragOverItem = useRef();
+    // const dragItem = useRef();
+    // const dragOverItem = useRef();
 
-    const dragStart = (e, position) =>{
-        dragItem.current = position;
-        // console.log(e.target.innerHTML)
-    }
+    // const dragStart = (e, position, data) =>{
+    //     dragItem.current = position;
+    //     console.log("Data get korteparsi",data)
+    //     // console.log(e.target.innerHTML)
+    // }
 
-    const dragEnter = (e, position) =>{
-        dragOverItem.current = position;
-        // console.log(e.target.innerHTML)
-    }
+    // const dragEnter = (e, position, data) =>{
+    //     dragOverItem.current = position;
+    //     // console.log(e.target.innerHTML)
+    // }
 
-    const drop = (e) => {
-        e.preventDefault();
-        console.log("Droped item in ", e );
-        console.log(todo[dragItem.current]);
-        const copyListItems = [...todoList];
-        const dragItemContent = copyListItems[dragItem.current];
-        copyListItems.splice(dragItem.current, 1);
-        copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-        dragItem.current = null;
-        dragOverItem.current = null;
-        console.log(copyListItems);
-        setTodoList(copyListItems);
-        filteredTodo(copyListItems)
-    };
+    // const drop = (e) => {
+    //     // e.preventDefault();
+    //     console.log("Droped item in ", e.target.innerText );
+    //     console.log(todo[dragItem.current]);
+    //     if(todo[dragItem.current].category){
+    //         console.log("Todo te drag end hoise")
+    //     }
+    //     const copyListItems = [...todoList];
+    //     const dragItemContent = copyListItems[dragItem.current];
+    //     copyListItems.splice(dragItem.current, 1);
+    //     copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+    //     dragItem.current = null;
+    //     dragOverItem.current = null;
+    //     console.log(copyListItems);
+    //     setTodoList(copyListItems);
+    //     filteredTodo(copyListItems)
+    // };
     // console.log(todoList);
+
+
+    // From code with rajesh channel
+    const onDragStart = (ev, id) => {
+        // console.log('dragstart:', id);
+        ev.dataTransfer.setData("id", id);
+    }
+
+    const onDragOver = (ev) => {
+        ev.preventDefault();
+    }
+
+    const onDrop = (ev, cat) => {
+        let id = ev.dataTransfer.getData("id");
+        // console.log("drop in in-progress");
+        console.log(id);
+        let tasks = todoList.map((task) => {
+            if (task.text === id) {
+                task.category = cat;
+            }
+            return task;
+        });
+        filteredTodo(todoList)
+        console.log(tasks);
+
+        // setTodoList({
+        //     ...todoList,
+        //     tasks
+        // });
+    }
 
 
     return (<div className='w-[1152px] p-7 relative'>
@@ -166,24 +200,27 @@ const TodoSec = () => {
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
                         todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white"
-                        onDragStart={(e) => dragStart(e, i)}
-                        onDragEnter={(e) => dragEnter(e, i)}
-                        onDragEnd={drop}
-                        draggable
+                            // onDragStart={(e) => dragStart(e, i, data)}
+                            // onDragEnter={(e) => dragEnter(e, i, data)}
+                            // onDragEnd={drop}
+                            onDragStart={(e) => onDragStart(e, data.text)}
+                            onDragOver={(e) => onDragOver(e)}
+                            onDrop={(e) => { onDrop(e, "todo") }}
+                            draggable
                         >
                             <div className='flex justify-end'>
-                                
-                                <div onClick={() => handleRightArrow(data) }  className='bg-gray-500 p-2 rounded-full ml-2'>
-                                <AiOutlineArrowRight className='' />
+
+                                <div onClick={() => handleRightArrow(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                    <AiOutlineArrowRight className='' />
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
                         </div>)
                     }
-                {
-                    showInput === true && todoCatagory === "todo" && <BorderCompo />
-                }
-                </div>  
+                    {
+                        showInput === true && todoCatagory === "todo" && <BorderCompo />
+                    }
+                </div>
                 <div className='bg-[#f6f8fa] absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
                     <button onClick={() => todoCate("todo")} className='p-3 w-full text-left font-semibold'><AiOutlinePlus className='inline-block' /> Add item</button>
                 </div>
@@ -205,24 +242,32 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This is actively being worked on
                     </p>
                 </div>
-                
+
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
-                        inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white">
+                        inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white"
+                            // onDragStart={(e) => dragStart(e, i, data)}
+                            // onDragEnter={(e) => dragEnter(e, i, data)}
+                            // onDragEnd={drop}
+                            onDragStart={(e) => onDragStart(e, data.text)}
+                            onDragOver={(e) => onDragOver(e)}
+                            onDrop={(e) => { onDrop(e, "in-progress") }}
+                            draggable
+                        >
                             <div className='flex justify-end'>
-                                <div onClick={() => handleLeftArrow(data) } className='bg-gray-500 p-2 rounded-full'>
-                                <AiOutlineArrowLeft  />
+                                <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
+                                    <AiOutlineArrowLeft />
                                 </div>
-                                <div onClick={() => handleRightArrow(data) } className='bg-gray-500 p-2 rounded-full ml-2'>
-                                <AiOutlineArrowRight className='' />
+                                <div onClick={() => handleRightArrow(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                    <AiOutlineArrowRight className='' />
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
                         </div>)
                     }
                     {
-                    showInput === true && todoCatagory === "in-progress" && <BorderCompo />
-                }
+                        showInput === true && todoCatagory === "in-progress" && <BorderCompo />
+                    }
                 </div>
                 <div className='bg-[#f6f8fa] absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
                     <button onClick={() => todoCate("in-progress")} className='p-3 w-full text-left font-semibold'><AiOutlinePlus className='inline-block' /> Add item</button>
@@ -247,10 +292,15 @@ const TodoSec = () => {
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto [&>*last-child]:mb-10'>
                     {
                         done.map((data, i) => <div key={i} className="bg-gradient-to-bl 
-                        to-[#2da44e] from-lime-400 p-3 rounded-lg mb-2 text-white">
+                        to-[#2da44e] from-lime-400 p-3 rounded-lg mb-2 text-white"
+                            // onDragStart={(e) => dragStart(e, i, data)}
+                            // onDragEnter={(e) => dragEnter(e, i, data)}
+                            // onDragEnd={drop}
+                            draggable
+                        >
                             <div className='flex justify-end'>
-                                <div onClick={() => handleLeftArrow(data) } className='bg-gray-500 p-2 rounded-full'>
-                                <AiOutlineArrowLeft  />
+                                <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
+                                    <AiOutlineArrowLeft />
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
