@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
-import { BsThreeDots } from "react-icons/bs"
+import { BsThreeDots } from "react-icons/bs";
+import { v4 as uuidv4 } from 'uuid';
 // import { AuthContext } from '../routes/AuthProvider';
 
 const TodoSec = () => {
@@ -39,7 +40,7 @@ const TodoSec = () => {
     const handleTodoSubmit = (e) => {
         e.preventDefault();
         setShowInput(false)
-        const todoData = { text: todoInput, category: todoCatagory };
+        const todoData = { text: todoInput,id: uuidv4(), category: todoCatagory };
         setTodoList([...todoList, todoData])
         filteredTodo([...todoList, todoData])
         // console.log(todoData, todoList)
@@ -116,12 +117,12 @@ const TodoSec = () => {
     }
 
     // Drag and Drop Feature Functionality
-    // const dragItem = useRef();
-    // const dragOverItem = useRef();
+    const dragItem = useRef();
+    const dragOverItem = useRef();
 
     // const dragStart = (e, position, data) =>{
-    //     dragItem.current = position;
-    //     console.log("Data get korteparsi",data)
+        // dragItem.current = position;
+        // console.log("Data get korteparsi",data)
     //     // console.log(e.target.innerHTML)
     // }
 
@@ -151,22 +152,24 @@ const TodoSec = () => {
 
 
     // From code with rajesh channel
-    const onDragStart = (ev, id) => {
-        // console.log('dragstart:', id);
+    const onDragStart = (ev,position, id) => {
+        dragItem.current = position;
         ev.dataTransfer.setData("id", id);
+        // console.log('dragstart:', ev.dataTransfer);
     }
 
-    const onDragOver = (ev) => {
+    const onDragOver = (ev, position) => {
         ev.preventDefault();
+        console.log(ev);
+        dragOverItem.current = position;
     }
 
     const onDrop = (ev, cat) => {
         let id = ev.dataTransfer.getData("id");
-        // console.log("drop in in-progress");
-        console.log(id);
         let tasks = todoList.map((task) => {
-            if (task.text === id) {
+            if (task.id === id) {
                 task.category = cat;
+                console.log("find");
             }
             return task;
         });
@@ -197,15 +200,16 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
-                <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto' 
+                            onDrop={(e) => { onDrop(e, "todo") }}
+                            
+                            onDragOver={(e) => onDragOver(e)}>
                     {
                         todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white"
                             // onDragStart={(e) => dragStart(e, i, data)}
                             // onDragEnter={(e) => dragEnter(e, i, data)}
                             // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e, data.text)}
-                            onDragOver={(e) => onDragOver(e)}
-                            onDrop={(e) => { onDrop(e, "todo") }}
+                            onDragStart={(e) => onDragStart(e,i, data.id)}
                             draggable
                         >
                             <div className='flex justify-end'>
@@ -243,15 +247,17 @@ const TodoSec = () => {
                     </p>
                 </div>
 
-                <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto' 
+                            onDrop={(e) => { onDrop(e, "in-progress") }}
+
+                            onDragOver={(e) => onDragOver(e)}
+                            >
                     {
                         inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white"
                             // onDragStart={(e) => dragStart(e, i, data)}
                             // onDragEnter={(e) => dragEnter(e, i, data)}
                             // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e, data.text)}
-                            onDragOver={(e) => onDragOver(e)}
-                            onDrop={(e) => { onDrop(e, "in-progress") }}
+                            onDragStart={(e) => onDragStart(e,i, data.id)}
                             draggable
                         >
                             <div className='flex justify-end'>
