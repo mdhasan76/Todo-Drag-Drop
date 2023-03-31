@@ -4,19 +4,19 @@ import { AuthContext } from '../routes/AuthProvider';
 
 const Login = () => {
     const { googleSignIn, setUser,loginUser } = useContext(AuthContext);
-    const location = useLocation();
+    // const location = useLocation();
     const navigate = useNavigate();
-    let from = location?.state?.from?.pathname || '/';
+    // let from = location?.state?.from?.pathname || '/';
 
     //Google LogIn
     const googleHandle = () => {
         googleSignIn()
             .then(res => {
-                if(res.user.email){
                     setUser(res.user);
                     console.log(res.user);
-                    <Navigate to="/"/>
-                }
+                    // <Navigate to="/"/>
+                    navigate("/")
+
             })
             .catch(err => console.log(err))
     }
@@ -30,7 +30,7 @@ const Login = () => {
         loginUser(email, password)
         .then(res => {
                 setUser(res.user)
-                navigate(from, { replace: true })
+                navigate("/", { replace: true })
                 e.target.reset()
 
         })

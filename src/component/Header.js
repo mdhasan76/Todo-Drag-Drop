@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../routes/AuthProvider';
+import {FaUserAlt} from "react-icons/fa"
 
 const Header = () => {
     const {user, logOutUser} = useContext(AuthContext);
@@ -12,8 +13,8 @@ const Header = () => {
         .catch(err=> console.log(err))
     }
     return (
-        <div className="navbar bg-base-100">
-            <div className="navbar bg-base-100">
+        <div className="navbar  bg-gray-100">
+            <div className="navbar">
                 <div className="navbar-start">
                     <div className="dropdown">
                         {/* <label tabIndex={0} className="btn btn-ghost lg:hidden">
@@ -38,14 +39,17 @@ const Header = () => {
                 </div>
                 <div className="navbar-center hidden lg:flex">
                     <ul className="menu menu-horizontal px-1">
-                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/" className='font-semibold'>Home</Link></li>
                     </ul>
                 </div>
                 <div className="navbar-end">
                 <div className='ml-3'>
                         {
-                            user &&
-                            <img src={user?.photoURL} className="h-10 w-10 rounded-full" alt=""/>
+                            user && user?.photoURL ?
+                            <div className="tooltip tooltip-bottom" data-tip={user?.displayName}>
+                                <img src={user?.photoURL} className="h-10 w-10 rounded-full" alt=""/> 
+                            </div>
+                                : <p className="text-3xl mr-3 tooltip tooltip-bottom" data-tip={user?.displayName}><FaUserAlt/></p>
                         }
                     </div>
                     {
