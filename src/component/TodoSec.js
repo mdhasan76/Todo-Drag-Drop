@@ -11,6 +11,7 @@ const TodoSec = () => {
     const [todo, setTodo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [done, setDone] = useState([]);
+    // const [todoCateBorder, setTodoCateBorder] = useState({});
     const inputRef = useRef(null);
 
     // handle outside click for hidden the input
@@ -110,6 +111,10 @@ const TodoSec = () => {
         }
     }
 
+    const BorderCompo = () =>{
+        return <div className='h-1 bg-indigo-700 w-full rounded-bl-lg rounded-br-lg'></div>
+    }
+
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
 
@@ -119,7 +124,7 @@ const TodoSec = () => {
                         <div className='flex items-center'>
                             <div className='h-4 w-4  bg-[#bf3989] rounded-full mr-2'></div>
                             <p className='mr-2 text-lg font-semibold'>Todo</p>
-                            <p className='bg-gray-200  px-2 rounded-full'>1</p>
+                            <p className='bg-gray-200  px-2 rounded-full'>{todo.length}</p>
                         </div>
                         <div className=''>
                             <BsThreeDots />
@@ -127,9 +132,12 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
+                {
+                    showInput === true && todoCatagory === "todo" && <BorderCompo />
+                }
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
-                        todo.map((data, i) => <div key={i} className="bg-[#9e6186] p-3 rounded-lg mb-2 text-white">
+                        todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white">
                             <div className='flex justify-end'>
                                 
                                 <div onClick={() => handleRightArrow(data) }  className='bg-gray-500 p-2 rounded-full ml-2'>
@@ -152,7 +160,7 @@ const TodoSec = () => {
                         <div className='flex items-center'>
                             <div className='h-4 w-4 bg-[#bf8700] rounded-full mr-2'></div>
                             <p className='mr-2 text-lg font-semibold'>In Progress</p>
-                            <p className='bg-gray-200  px-2 rounded-full'>0</p>
+                            <p className='bg-gray-200  px-2 rounded-full'>{inProgress.length}</p>
                         </div>
                         <div className=''>
                             <BsThreeDots />
@@ -161,9 +169,12 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This is actively being worked on
                     </p>
                 </div>
+                {
+                    showInput === true && todoCatagory === "in-progress" && <BorderCompo />
+                }
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
-                        inProgress.map((data, i) => <div key={i} className="bg-[#a78b49] p-3 rounded-lg mb-2 text-white">
+                        inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white">
                             <div className='flex justify-end'>
                                 <div onClick={() => handleLeftArrow(data) } className='bg-gray-500 p-2 rounded-full'>
                                 <AiOutlineArrowLeft  />
@@ -188,7 +199,7 @@ const TodoSec = () => {
                         <div className='flex items-center'>
                             <div className='h-4 w-4 bg-[#2da44e] rounded-full mr-2'></div>
                             <p className='mr-2 text-lg font-semibold'>Done</p>
-                            <p className='bg-gray-200  px-2 rounded-full'>0</p>
+                            <p className='bg-gray-200  px-2 rounded-full'>{done.length}</p>
                         </div>
                         <div className=''>
                             <BsThreeDots />
@@ -196,9 +207,13 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This has been completed</p>
                 </div>
+                {
+                    showInput === true && todoCatagory === "done" && <BorderCompo />
+                }
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto [&>*last-child]:mb-10'>
                     {
-                        done.map((data, i) => <div key={i} className="bg-[#2e6e40] p-3 rounded-lg mb-2 text-white">
+                        done.map((data, i) => <div key={i} className="bg-gradient-to-bl 
+                        to-[#2da44e] from-lime-400 p-3 rounded-lg mb-2 text-white">
                             <div className='flex justify-end'>
                                 <div onClick={() => handleLeftArrow(data) } className='bg-gray-500 p-2 rounded-full'>
                                 <AiOutlineArrowLeft  />
