@@ -61,6 +61,55 @@ const TodoSec = () => {
         setDone(done)
         console.log("todo", todo, "inprogress", inProgress, "done", done)
     }
+
+    //left arrow btn handler
+    const handleLeftArrow = (data) =>{
+        if(data.category === "in-progress"){
+            const updatedArray = todoList.map(item => {
+                if (item.text === data.text) {
+                  return { ...item, category: 'todo' };
+                }
+                return item;
+              });
+              setTodoList(updatedArray);
+              filteredTodo(updatedArray);
+        }
+        else{
+            const updatedArray = todoList.map(item => {
+                if (item.text === data.text) {
+                  return { ...item, category: 'in-progress' };
+                }
+                return item;
+              });
+              setTodoList(updatedArray);
+              filteredTodo(updatedArray);
+        }
+    }
+
+    //right arrow btn handler
+    const handleRightArrow = (data) =>{
+        if(data.category === "todo"){
+            const updatedArray = todoList.map(item => {
+                if (item.text === data.text) {
+                  return { ...item, category: 'in-progress' };
+                }
+                return item;
+              });
+              setTodoList(updatedArray);
+              filteredTodo(updatedArray);
+        }
+        else{
+            const updatedArray = todoList.map(item => {
+                if (item.text === data.text) {
+                  return { ...item, category: 'done' };
+                }
+                return item;
+              });
+              setTodoList(updatedArray);
+              filteredTodo(updatedArray);
+        }
+    }
+
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
 
@@ -78,14 +127,12 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
-                <div className=' h-[360px] min-h-[360px] overflow-y-scroll'>
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
                         todo.map((data, i) => <div key={i} className="bg-[#9e6186] p-3 rounded-lg mb-2 text-white">
                             <div className='flex justify-end'>
-                                <div className='bg-gray-500 p-2 rounded-full'>
-                                <AiOutlineArrowLeft  />
-                                </div>
-                                <div className='bg-gray-500 p-2 rounded-full ml-2'>
+                                
+                                <div onClick={() => handleRightArrow(data) }  className='bg-gray-500 p-2 rounded-full ml-2'>
                                 <AiOutlineArrowRight className='' />
                                 </div>
                             </div>
@@ -114,14 +161,14 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This is actively being worked on
                     </p>
                 </div>
-                <div className=' h-[360px] min-h-[360px] overflow-y-scroll'>
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
                         inProgress.map((data, i) => <div key={i} className="bg-[#a78b49] p-3 rounded-lg mb-2 text-white">
                             <div className='flex justify-end'>
-                                <div className='bg-gray-500 p-2 rounded-full'>
+                                <div onClick={() => handleLeftArrow(data) } className='bg-gray-500 p-2 rounded-full'>
                                 <AiOutlineArrowLeft  />
                                 </div>
-                                <div className='bg-gray-500 p-2 rounded-full ml-2'>
+                                <div onClick={() => handleRightArrow(data) } className='bg-gray-500 p-2 rounded-full ml-2'>
                                 <AiOutlineArrowRight className='' />
                                 </div>
                             </div>
@@ -149,15 +196,12 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This has been completed</p>
                 </div>
-                <div className=' h-[360px] min-h-[360px] overflow-y-scroll'>
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto [&>*last-child]:mb-10'>
                     {
                         done.map((data, i) => <div key={i} className="bg-[#2e6e40] p-3 rounded-lg mb-2 text-white">
                             <div className='flex justify-end'>
-                                <div className='bg-gray-500 p-2 rounded-full'>
+                                <div onClick={() => handleLeftArrow(data) } className='bg-gray-500 p-2 rounded-full'>
                                 <AiOutlineArrowLeft  />
-                                </div>
-                                <div className='bg-gray-500 p-2 rounded-full ml-2'>
-                                <AiOutlineArrowRight className='' />
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
