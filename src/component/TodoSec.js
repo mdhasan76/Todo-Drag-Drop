@@ -45,7 +45,7 @@ const TodoSec = () => {
         // console.log(todoData, todoList)
         e.target.reset()
     }
-    // console.log(todoList)
+
     //specific card data
     const todoCate = (val) => {
         setShowInput(true);
@@ -60,7 +60,7 @@ const TodoSec = () => {
         setTodo(todo)
         setInProgress(inProgress)
         setDone(done)
-        console.log("todo", todo, "inprogress", inProgress, "done", done)
+        // console.log("todo", todo, "inprogress", inProgress, "done", done)
     }
 
     //left arrow btn handler
@@ -115,6 +115,37 @@ const TodoSec = () => {
         return <div className='h-1 bg-indigo-700 w-full rounded-bl-lg rounded-br-lg'></div>
     }
 
+    // Drag and Drop Feature Functionality
+    const dragItem = useRef();
+    const dragOverItem = useRef();
+
+    const dragStart = (e, position) =>{
+        dragItem.current = position;
+        // console.log(e.target.innerHTML)
+    }
+
+    const dragEnter = (e, position) =>{
+        dragOverItem.current = position;
+        // console.log(e.target.innerHTML)
+    }
+
+    const drop = (e) => {
+        e.preventDefault();
+        console.log("Droped item in ", e );
+        console.log(todo[dragItem.current]);
+        const copyListItems = [...todoList];
+        const dragItemContent = copyListItems[dragItem.current];
+        copyListItems.splice(dragItem.current, 1);
+        copyListItems.splice(dragOverItem.current, 0, dragItemContent);
+        dragItem.current = null;
+        dragOverItem.current = null;
+        console.log(copyListItems);
+        setTodoList(copyListItems);
+        filteredTodo(copyListItems)
+    };
+    // console.log(todoList);
+
+
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
 
@@ -132,12 +163,14 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
-                {
-                    showInput === true && todoCatagory === "todo" && <BorderCompo />
-                }
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
-                        todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white">
+                        todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white"
+                        onDragStart={(e) => dragStart(e, i)}
+                        onDragEnter={(e) => dragEnter(e, i)}
+                        onDragEnd={drop}
+                        draggable
+                        >
                             <div className='flex justify-end'>
                                 
                                 <div onClick={() => handleRightArrow(data) }  className='bg-gray-500 p-2 rounded-full ml-2'>
@@ -147,7 +180,10 @@ const TodoSec = () => {
                             <p className='p-2'>{data.text}</p>
                         </div>)
                     }
-                </div>
+                {
+                    showInput === true && todoCatagory === "todo" && <BorderCompo />
+                }
+                </div>  
                 <div className='bg-[#f6f8fa] absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
                     <button onClick={() => todoCate("todo")} className='p-3 w-full text-left font-semibold'><AiOutlinePlus className='inline-block' /> Add item</button>
                 </div>
@@ -169,9 +205,7 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This is actively being worked on
                     </p>
                 </div>
-                {
-                    showInput === true && todoCatagory === "in-progress" && <BorderCompo />
-                }
+                
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'>
                     {
                         inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white">
@@ -186,6 +220,9 @@ const TodoSec = () => {
                             <p className='p-2'>{data.text}</p>
                         </div>)
                     }
+                    {
+                    showInput === true && todoCatagory === "in-progress" && <BorderCompo />
+                }
                 </div>
                 <div className='bg-[#f6f8fa] absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
                     <button onClick={() => todoCate("in-progress")} className='p-3 w-full text-left font-semibold'><AiOutlinePlus className='inline-block' /> Add item</button>
@@ -207,9 +244,6 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This has been completed</p>
                 </div>
-                {
-                    showInput === true && todoCatagory === "done" && <BorderCompo />
-                }
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto [&>*last-child]:mb-10'>
                     {
                         done.map((data, i) => <div key={i} className="bg-gradient-to-bl 
@@ -221,6 +255,9 @@ const TodoSec = () => {
                             </div>
                             <p className='p-2'>{data.text}</p>
                         </div>)
+                    }
+                    {
+                        showInput === true && todoCatagory === "done" && <BorderCompo />
                     }
                 </div>
                 <div className='bg-[#f6f8fa] absolute bottom-0 rounded-lg left-0 hover:bg-gray-200 duration-300 w-full hover:cursor-pointer'>
