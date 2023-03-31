@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
+import { AiFillEdit } from "react-icons/ai";
 import { v4 as uuidv4 } from 'uuid';
 // import { AuthContext } from '../routes/AuthProvider';
 
@@ -35,12 +36,30 @@ const TodoSec = () => {
         setShowInput(false)
     };
 
+    //todo update
+    const updateTodo = (data) => {
+        // console.log(data);
+        const dataForUpdate = todoList.find(el => el.id === data.id);
+        const update = window.prompt("Update Todo", data.text);
+        if (update === null) {
+            return
+        }
+        const newArr = todoList.map(el => {
+            if (el.id === data.id) {
+                dataForUpdate.text = update;
+            }
+            return el
+        })
+        setTodoList(newArr)
+        filteredTodo(newArr)
+
+    }
 
     //Get the todo data 
     const handleTodoSubmit = (e) => {
         e.preventDefault();
         setShowInput(false)
-        const todoData = { text: todoInput,id: uuidv4(), category: todoCatagory };
+        const todoData = { text: todoInput, id: uuidv4(), category: todoCatagory };
         setTodoList([...todoList, todoData])
         filteredTodo([...todoList, todoData])
         // console.log(todoData, todoList)
@@ -121,8 +140,8 @@ const TodoSec = () => {
     const dragOverItem = useRef();
 
     // const dragStart = (e, position, data) =>{
-        // dragItem.current = position;
-        // console.log("Data get korteparsi",data)
+    // dragItem.current = position;
+    // console.log("Data get korteparsi",data)
     //     // console.log(e.target.innerHTML)
     // }
 
@@ -152,7 +171,7 @@ const TodoSec = () => {
 
 
     // From code with rajesh channel
-    const onDragStart = (ev,position, id) => {
+    const onDragStart = (ev, position, id) => {
         dragItem.current = position;
         ev.dataTransfer.setData("id", id);
         // console.log('dragstart:', ev.dataTransfer);
@@ -160,7 +179,7 @@ const TodoSec = () => {
 
     const onDragOver = (ev, position) => {
         ev.preventDefault();
-        console.log(ev);
+        // console.log(ev);
         dragOverItem.current = position;
     }
 
@@ -169,12 +188,12 @@ const TodoSec = () => {
         let tasks = todoList.map((task) => {
             if (task.id === id) {
                 task.category = cat;
-                console.log("find");
+                // console.log("find");
             }
             return task;
         });
         filteredTodo(todoList)
-        console.log(tasks);
+        // console.log(tasks);
 
         // setTodoList({
         //     ...todoList,
@@ -200,20 +219,21 @@ const TodoSec = () => {
                     </div>
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
-                <div className=' h-[360px] min-h-[360px] overflow-y-auto' 
-                            onDrop={(e) => { onDrop(e, "todo") }}
-                            
-                            onDragOver={(e) => onDragOver(e)}>
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto'
+                    onDrop={(e) => { onDrop(e, "todo") }}
+                    onDragOver={(e) => onDragOver(e)}>
                     {
                         todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white"
                             // onDragStart={(e) => dragStart(e, i, data)}
                             // onDragEnter={(e) => dragEnter(e, i, data)}
                             // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e,i, data.id)}
+                            onDragStart={(e) => onDragStart(e, i, data.id)}
                             draggable
                         >
-                            <div className='flex justify-end'>
-
+                            <div className='flex justify-between'>
+                                <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                    <AiFillEdit />
+                                </div>
                                 <div onClick={() => handleRightArrow(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
                                     <AiOutlineArrowRight className='' />
                                 </div>
@@ -247,25 +267,29 @@ const TodoSec = () => {
                     </p>
                 </div>
 
-                <div className=' h-[360px] min-h-[360px] overflow-y-auto' 
-                            onDrop={(e) => { onDrop(e, "in-progress") }}
-
-                            onDragOver={(e) => onDragOver(e)}
-                            >
+                <div className=' h-[360px] min-h-[360px] overflow-y-auto'
+                    onDrop={(e) => { onDrop(e, "in-progress") }}
+                    onDragOver={(e) => onDragOver(e)}
+                >
                     {
                         inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white"
                             // onDragStart={(e) => dragStart(e, i, data)}
                             // onDragEnter={(e) => dragEnter(e, i, data)}
                             // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e,i, data.id)}
+                            onDragStart={(e) => onDragStart(e, i, data.id)}
                             draggable
                         >
-                            <div className='flex justify-end'>
-                                <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
-                                    <AiOutlineArrowLeft />
+                            <div className='flex justify-between'>
+                                <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                    <AiFillEdit />
                                 </div>
-                                <div onClick={() => handleRightArrow(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
-                                    <AiOutlineArrowRight className='' />
+                                <div className='flex'>
+                                    <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
+                                        <AiOutlineArrowLeft />
+                                    </div>
+                                    <div onClick={() => handleRightArrow(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                        <AiOutlineArrowRight className='' />
+                                    </div>
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
@@ -304,7 +328,10 @@ const TodoSec = () => {
                             // onDragEnd={drop}
                             draggable
                         >
-                            <div className='flex justify-end'>
+                            <div className='flex justify-between'>
+                                <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                    <AiFillEdit />
+                                </div>
                                 <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
                                     <AiOutlineArrowLeft />
                                 </div>
