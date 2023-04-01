@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-icons/ai";
 import { BsThreeDots } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
+import { MdDelete } from "react-icons/md";
 import { v4 as uuidv4 } from 'uuid';
 
 const TodoSec = () => {
@@ -56,6 +57,12 @@ const TodoSec = () => {
         setTodoList(newArr)
         filteredTodo(newArr)
 
+    }
+    //deteletodo
+    const deleteTodo = (id) => {
+        const findTodo = todoList.filter(el => el.id !== id);
+        setTodoList(findTodo);
+        filteredTodo(findTodo)
     }
 
     //Get the todo data 
@@ -198,7 +205,7 @@ const TodoSec = () => {
 
     const dragEnded = (boardId, cardId) => {
         let s_bIndex, s_cIndex, t_bIndex, t_cIndex;
-        console.log("droped")
+        // console.log("droped")
 
         s_cIndex = todoList.findIndex(el => el.id === cardId);
         if (s_cIndex < 0) return;
@@ -291,8 +298,13 @@ const TodoSec = () => {
                             draggable
                         >
                             <div className='flex justify-between'>
-                                <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
-                                    <AiFillEdit />
+                                <div className='flex'>
+                                    <div onClick={() => deleteTodo(data.id)} className='bg-red-500 p-2 rounded-full ml-2'>
+                                        <MdDelete />
+                                    </div>
+                                    <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                        <AiFillEdit />
+                                    </div>
                                 </div>
                                 <div onClick={() => handleRightArrow(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
                                     <AiOutlineArrowRight className='' />
@@ -342,8 +354,13 @@ const TodoSec = () => {
                             draggable
                         >
                             <div className='flex justify-between'>
-                                <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
-                                    <AiFillEdit />
+                            <div className='flex'>
+                                    <div onClick={() => deleteTodo(data.id)} className='bg-red-500 p-2 rounded-full ml-2'>
+                                        <MdDelete />
+                                    </div>
+                                    <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                        <AiFillEdit />
+                                    </div>
                                 </div>
                                 <div className='flex'>
                                     <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
@@ -393,8 +410,13 @@ const TodoSec = () => {
                             draggable
                         >
                             <div className='flex justify-between'>
-                                <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
-                                    <AiFillEdit />
+                            <div className='flex'>
+                                    <div onClick={() => deleteTodo(data.id)} className='bg-red-500 p-2 rounded-full ml-2'>
+                                        <MdDelete />
+                                    </div>
+                                    <div onClick={() => updateTodo(data)} className='bg-gray-500 p-2 rounded-full ml-2'>
+                                        <AiFillEdit />
+                                    </div>
                                 </div>
                                 <div onClick={() => handleLeftArrow(data)} className='bg-gray-500 p-2 rounded-full'>
                                     <AiOutlineArrowLeft />
