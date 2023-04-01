@@ -12,7 +12,10 @@ const TodoSec = () => {
     const [todo, setTodo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [done, setDone] = useState([]);
-    const [clientY, setClientY] = useState("");
+    const [target, setTarget] = useState({
+        cardId: "",
+        boardId: ""
+    });
     // const [todoCateBorder, setTodoCateBorder] = useState({});
     const inputRef = useRef(null);
 
@@ -139,59 +142,34 @@ const TodoSec = () => {
         return <div className='h-1 bg-indigo-700 w-full rounded-bl-lg rounded-br-lg'></div>
     }
 
+    const dragEnded = (boardId, cardId) => {
+        let s_cIndex, t_cIndex;
 
-    // From code with rajesh channel
-    const onDragStart = (ev, position, id, data) => {
-        ev.dataTransfer.setData("id", id);
+        s_cIndex = todoList.findIndex(el => el.id === cardId);
+        if (s_cIndex < 0) return;
+        t_cIndex = todoList.findIndex(el => el.id === target.cardId);
+        if (t_cIndex < 0) return;
+
+        const tempList = [...todoList];
+        const sourceCard = todoList.find(el => el.id === cardId);
+        sourceCard.category = target.boardId;
+        // console.log(cardId);
+        tempList.splice(s_cIndex, 1);
+        tempList.splice(t_cIndex, 0, sourceCard);
+        console.log(tempList);
+        setTodoList([...tempList]);
+        filteredTodo([...tempList])
+
+        setTarget({
+            cardId: "",
+            boardId: "",
+        });
     }
 
-    const onDragOver = (ev, position) => {
-        ev.preventDefault();
-        setClientY({ e: ev, clientPos: ev.clientY })
+    const dragEntered = (boardId, cardId) => {
+        setTarget({ boardId, cardId })
     }
-
-    const onDrop = (ev, cat) => {
-        let id = ev.dataTransfer.getData("id");
-        // console.log(id); 
-        const findID = todoList.find(el => el.id === id);
-        const els = todoList.filter(el => el.id !== id);
-        // console.log("els", els);
-
-        const bottomTask = insertAboveTask(ev, els);
-
-        if (findID.category !== cat) {
-            findID.category = cat;
-            const newArr = []
-            for (let keys of todoList) {
-                if (keys.id === id) {
-                    continue
-                }
-                newArr.push(keys)
-            }
-            setTodoList([...newArr, findID]);
-            filteredTodo([...newArr, findID,]);
-        }
-    }
-    
-    const insertAboveTask = (ev, els) => {
-        let closestTask = null;
-        let closestOffset = Number.NEGATIVE_INFINITY;
-
-        console.log(els);
-        // const newV = els?.forEach((task) => {
-        //     const { pageY } = clientY.e;
-
-        // // console.log(clientY.e.pageX, clientY.e.pageY, clientY);
-        //     const offset = parseInt(clientY.clientPos) - pageY;
-        
-        //     if (offset < 0 && offset > closestOffset) {
-        //       closestOffset = offset;
-        //       closestTask = task;
-        //     }
-        //     return closestTask;
-        //   });
-        //   console.log(newV);
-    }
+    // console.log(target);
 
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
@@ -211,14 +189,11 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'
-                    onDrop={(e) => { onDrop(e, "todo") }}
-                    onDragOver={(e) => onDragOver(e)}>
+                >
                     {
                         todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white"
-                            // onDragStart={(e) => dragStart(e, i, data)}
-                            // onDragEnter={(e) => dragEnter(e, i, data)}
-                            // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e, i, data.id, data)}
+                            onDragEnd={() => dragEnded("todo", data.id)}
+                            onDragEnter={() => dragEntered("todo", data.id)}
                             draggable
                         >
                             <div className='flex justify-between'>
@@ -259,15 +234,11 @@ const TodoSec = () => {
                 </div>
 
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'
-                    onDrop={(e) => { onDrop(e, "in-progress") }}
-                    onDragOver={(e) => onDragOver(e)}
                 >
                     {
                         inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white"
-                            // onDragStart={(e) => dragStart(e, i, data)}
-                            // onDragEnter={(e) => dragEnter(e, i, data)}
-                            // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e, i, data.id, data)}
+                            onDragEnd={() => dragEnded("in-progress", data.id)}
+                            onDragEnter={() => dragEntered("in-progress", data.id)}
                             draggable
                         >
                             <div className='flex justify-between'>
@@ -314,9 +285,8 @@ const TodoSec = () => {
                     {
                         done.map((data, i) => <div key={i} className="bg-gradient-to-bl 
                         to-[#2da44e] from-lime-400 p-3 rounded-lg mb-2 text-white"
-                            // onDragStart={(e) => dragStart(e, i, data)}
-                            // onDragEnter={(e) => dragEnter(e, i, data)}
-                            // onDragEnd={drop}
+                            onDragEnd={() => dragEnded("done", data.id)}
+                            onDragEnter={() => dragEntered("done", data.id)}
                             draggable
                         >
                             <div className='flex justify-between'>
