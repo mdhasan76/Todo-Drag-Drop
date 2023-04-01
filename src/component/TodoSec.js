@@ -3,7 +3,6 @@ import { AiOutlineArrowRight, AiOutlineArrowLeft, AiOutlinePlus } from "react-ic
 import { BsThreeDots } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
 import { v4 as uuidv4 } from 'uuid';
-// import { AuthContext } from '../routes/AuthProvider';
 
 const TodoSec = () => {
     const [todoInput, setTodoInput] = useState("");
@@ -13,6 +12,7 @@ const TodoSec = () => {
     const [todo, setTodo] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [done, setDone] = useState([]);
+    const [clientY, setClientY] = useState("");
     // const [todoCateBorder, setTodoCateBorder] = useState({});
     const inputRef = useRef(null);
 
@@ -58,10 +58,14 @@ const TodoSec = () => {
     //Get the todo data 
     const handleTodoSubmit = (e) => {
         e.preventDefault();
+        if (todoInput === "") {
+            return
+        }
         setShowInput(false)
         const todoData = { text: todoInput, id: uuidv4(), category: todoCatagory };
         setTodoList([...todoList, todoData])
         filteredTodo([...todoList, todoData])
+        setTodoInput("")
         // console.log(todoData, todoList)
         e.target.reset()
     }
@@ -135,72 +139,59 @@ const TodoSec = () => {
         return <div className='h-1 bg-indigo-700 w-full rounded-bl-lg rounded-br-lg'></div>
     }
 
-    // Drag and Drop Feature Functionality
-    const dragItem = useRef();
-    const dragOverItem = useRef();
-
-    // const dragStart = (e, position, data) =>{
-    // dragItem.current = position;
-    // console.log("Data get korteparsi",data)
-    //     // console.log(e.target.innerHTML)
-    // }
-
-    // const dragEnter = (e, position, data) =>{
-    //     dragOverItem.current = position;
-    //     // console.log(e.target.innerHTML)
-    // }
-
-    // const drop = (e) => {
-    //     // e.preventDefault();
-    //     console.log("Droped item in ", e.target.innerText );
-    //     console.log(todo[dragItem.current]);
-    //     if(todo[dragItem.current].category){
-    //         console.log("Todo te drag end hoise")
-    //     }
-    //     const copyListItems = [...todoList];
-    //     const dragItemContent = copyListItems[dragItem.current];
-    //     copyListItems.splice(dragItem.current, 1);
-    //     copyListItems.splice(dragOverItem.current, 0, dragItemContent);
-    //     dragItem.current = null;
-    //     dragOverItem.current = null;
-    //     console.log(copyListItems);
-    //     setTodoList(copyListItems);
-    //     filteredTodo(copyListItems)
-    // };
-    // console.log(todoList);
-
 
     // From code with rajesh channel
-    const onDragStart = (ev, position, id) => {
-        dragItem.current = position;
+    const onDragStart = (ev, position, id, data) => {
         ev.dataTransfer.setData("id", id);
-        // console.log('dragstart:', ev.dataTransfer);
     }
 
     const onDragOver = (ev, position) => {
         ev.preventDefault();
-        // console.log(ev);
-        dragOverItem.current = position;
+        setClientY({ e: ev, clientPos: ev.clientY })
     }
 
     const onDrop = (ev, cat) => {
         let id = ev.dataTransfer.getData("id");
-        let tasks = todoList.map((task) => {
-            if (task.id === id) {
-                task.category = cat;
-                // console.log("find");
+        // console.log(id); 
+        const findID = todoList.find(el => el.id === id);
+        const els = todoList.filter(el => el.id !== id);
+        // console.log("els", els);
+
+        const bottomTask = insertAboveTask(ev, els);
+
+        if (findID.category !== cat) {
+            findID.category = cat;
+            const newArr = []
+            for (let keys of todoList) {
+                if (keys.id === id) {
+                    continue
+                }
+                newArr.push(keys)
             }
-            return task;
-        });
-        filteredTodo(todoList)
-        // console.log(tasks);
-
-        // setTodoList({
-        //     ...todoList,
-        //     tasks
-        // });
+            setTodoList([...newArr, findID]);
+            filteredTodo([...newArr, findID,]);
+        }
     }
+    
+    const insertAboveTask = (ev, els) => {
+        let closestTask = null;
+        let closestOffset = Number.NEGATIVE_INFINITY;
 
+        console.log(els);
+        // const newV = els?.forEach((task) => {
+        //     const { pageY } = clientY.e;
+
+        // // console.log(clientY.e.pageX, clientY.e.pageY, clientY);
+        //     const offset = parseInt(clientY.clientPos) - pageY;
+        
+        //     if (offset < 0 && offset > closestOffset) {
+        //       closestOffset = offset;
+        //       closestTask = task;
+        //     }
+        //     return closestTask;
+        //   });
+        //   console.log(newV);
+    }
 
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
@@ -227,7 +218,7 @@ const TodoSec = () => {
                             // onDragStart={(e) => dragStart(e, i, data)}
                             // onDragEnter={(e) => dragEnter(e, i, data)}
                             // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e, i, data.id)}
+                            onDragStart={(e) => onDragStart(e, i, data.id, data)}
                             draggable
                         >
                             <div className='flex justify-between'>
@@ -276,7 +267,7 @@ const TodoSec = () => {
                             // onDragStart={(e) => dragStart(e, i, data)}
                             // onDragEnter={(e) => dragEnter(e, i, data)}
                             // onDragEnd={drop}
-                            onDragStart={(e) => onDragStart(e, i, data.id)}
+                            onDragStart={(e) => onDragStart(e, i, data.id, data)}
                             draggable
                         >
                             <div className='flex justify-between'>
