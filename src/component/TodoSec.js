@@ -142,34 +142,122 @@ const TodoSec = () => {
         return <div className='h-1 bg-indigo-700 w-full rounded-bl-lg rounded-br-lg'></div>
     }
 
+
+    // From code with rajesh channel
+    // const onDragStart = (ev, position, id, data) => {
+    //     ev.dataTransfer.setData("id", id);
+    // }
+
+    // const onDragOver = (ev, position) => {
+    //     ev.preventDefault();
+    //     setClientY({ e: ev, clientPos: ev.clientY })
+    // }
+
+    // const onDrop = (ev, cat) => {
+    //     let id = ev.dataTransfer.getData("id");
+    //     // console.log(id); 
+    //     const findID = todoList.find(el => el.id === id);
+    //     const els = todoList.filter(el => el.id !== id);
+    //     // console.log("els", els);
+
+    //     const bottomTask = insertAboveTask(ev, els);
+
+    //     if (findID.category !== cat) {
+    //         findID.category = cat;
+    //         const newArr = []
+    //         for (let keys of todoList) {
+    //             if (keys.id === id) {
+    //                 continue
+    //             }
+    //             newArr.push(keys)
+    //         }
+    //         setTodoList([...newArr, findID]);
+    //         filteredTodo([...newArr, findID,]);
+    //     }
+    // }
+
+    // const insertAboveTask = (ev, els) => {
+    //     let closestTask = null;
+    //     let closestOffset = Number.NEGATIVE_INFINITY;
+
+    //     console.log(els);
+    //     // const newV = els?.forEach((task) => {
+    //     //     const { pageY } = clientY.e;
+
+    //     // // console.log(clientY.e.pageX, clientY.e.pageY, clientY);
+    //     //     const offset = parseInt(clientY.clientPos) - pageY;
+
+    //     //     if (offset < 0 && offset > closestOffset) {
+    //     //       closestOffset = offset;
+    //     //       closestTask = task;
+    //     //     }
+    //     //     return closestTask;
+    //     //   });
+    //     //   console.log(newV);
+    // }
+
     const dragEnded = (boardId, cardId) => {
-        let s_cIndex, t_cIndex;
+        let s_bIndex, s_cIndex, t_bIndex, t_cIndex;
+        console.log("droped")
 
         s_cIndex = todoList.findIndex(el => el.id === cardId);
         if (s_cIndex < 0) return;
+        s_bIndex = todoList.findIndex(el => el.id === boardId);
+        // if (s_bIndex < 0) return;
         t_cIndex = todoList.findIndex(el => el.id === target.cardId);
-        if (t_cIndex < 0) return;
-
-        const tempList = [...todoList];
+        // if (t_cIndex < 0) return;
+        t_bIndex = todo.findIndex(el => el.id === boardId);
+        // if (t_bIndex < 0) return;
+        // console.log("sourse Index", s_cIndex);
+        // console.log("target sourse Index", t_cIndex);
+        // console.log(todoList)
+        const tempList = [...todoList]
+        // const sourceCard = tempList[s_boardIndex].cards[s_cardIndex];
         const sourceCard = todoList.find(el => el.id === cardId);
         sourceCard.category = target.boardId;
-        // console.log(cardId);
+        console.log(sourceCard);
         tempList.splice(s_cIndex, 1);
         tempList.splice(t_cIndex, 0, sourceCard);
-        console.log(tempList);
+        // tempBoards[s_boardIndex].cards.splice(s_cardIndex, 1);
+        // tempBoards[t_boardIndex].cards.splice(t_cardIndex, 0, sourceCard);
+        // setBoards(tempBoards);
         setTodoList([...tempList]);
         filteredTodo([...tempList])
+        console.log(tempList);
 
         setTarget({
             cardId: "",
             boardId: "",
         });
+        // if (boardId === 'todo') {
+        //     s_cIndex = todo.findIndex(el => el.id === cardId);
+        //     if (s_cIndex < 0) return;
+        //     if (target.boardId === "in-progress") {
+        //         t_bIndex = inProgress.findIndex(el => el.id === target.boardId);
+        //         if(t_bIndex < 0) return;
+        //         console.log("inProgress te target");
+        //     }
+        //     else if (target.boardId === "todo") {
+        //         t_bIndex = todo.findIndex(el => el.id === target.boardId);
+        //         if(t_bIndex < 0) return;
+        //         console.log("todo te target");
+        //     }
+        //     console.log("sehse");
+
+
+        //     //   console.log(s_cIndex);
+        // } else if (boardId === "in-progress") {
+        //     s_cIndex = inProgress.findIndex(el => el.id === cardId);
+        //     if (s_cIndex < 0) return;
+        //     // console.log(s_cIndex);
+        // }
     }
 
     const dragEntered = (boardId, cardId) => {
+        if (target.cardId === cardId) return;
         setTarget({ boardId, cardId })
     }
-    // console.log(target);
+    console.log(target);
 
     return (<div className='w-[1152px] p-7 relative'>
         <div className='flex gap-2 '>
@@ -189,9 +277,15 @@ const TodoSec = () => {
                     <p className='text-[rgb(87, 96, 106)] text-sm py-2'>This item hasn't been started</p>
                 </div>
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'
+                // onDrop={(e) => { onDrop(e, "todo") }}
+                // onDragOver={(e) => onDragOver(e)}
                 >
                     {
                         todo.map((data, i) => <div key={i} className=" bg-gradient-to-bl from-fuchsia-400 to-pink-400 p-3 rounded-lg mb-2 text-white"
+                            // onDragStart={(e) => dragStart(e, i, data)}
+                            // onDragEnter={(e) => dragEnter(e, i, data)}
+                            // onDragEnd={drop}
+                            // onDragStart={(e) => onDragStart(e, i, data.id, data)}
                             onDragEnd={() => dragEnded("todo", data.id)}
                             onDragEnter={() => dragEntered("todo", data.id)}
                             draggable
@@ -234,9 +328,15 @@ const TodoSec = () => {
                 </div>
 
                 <div className=' h-[360px] min-h-[360px] overflow-y-auto'
+                // onDrop={(e) => { onDrop(e, "in-progress") }}
+                // onDragOver={(e) => onDragOver(e)}
                 >
                     {
                         inProgress.map((data, i) => <div key={i} className="bg-gradient-to-bl to-[#bf8700] from-[#e8ca84] p-3 rounded-lg mb-2 text-white"
+                            // onDragStart={(e) => dragStart(e, i, data)}
+                            // onDragEnter={(e) => dragEnter(e, i, data)}
+                            // onDragEnd={drop}
+                            // onDragStart={(e) => onDragStart(e, i, data.id, data)}
                             onDragEnd={() => dragEnded("in-progress", data.id)}
                             onDragEnter={() => dragEntered("in-progress", data.id)}
                             draggable
@@ -285,6 +385,9 @@ const TodoSec = () => {
                     {
                         done.map((data, i) => <div key={i} className="bg-gradient-to-bl 
                         to-[#2da44e] from-lime-400 p-3 rounded-lg mb-2 text-white"
+                            // onDragStart={(e) => dragStart(e, i, data)}
+                            // onDragEnter={(e) => dragEnter(e, i, data)}
+                            // onDragEnd={drop}
                             onDragEnd={() => dragEnded("done", data.id)}
                             onDragEnter={() => dragEntered("done", data.id)}
                             draggable
