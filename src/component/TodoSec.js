@@ -72,7 +72,7 @@ const TodoSec = () => {
             return
         }
         setShowInput(false)
-        const todoData = { text: todoInput, id: uuidv4(), category: todoCatagory };
+        const todoData = { text: todoInput, id: uuidv4(), category: todoCatagory, isDraging: false };
         setTodoList([...todoList, todoData])
         filteredTodo([...todoList, todoData])
         setTodoInput("")
@@ -166,6 +166,9 @@ const TodoSec = () => {
         console.log(sourceCard);
         tempList.splice(s_cIndex, 1);
         tempList.splice(t_cIndex, 0, sourceCard);
+        tempList.forEach(el => {
+            el.isDraging = false
+        })
         setTodoList([...tempList]);
         filteredTodo([...tempList])
         console.log(tempList);
@@ -177,8 +180,18 @@ const TodoSec = () => {
     }
 
     const dragEntered = (boardId, cardId) => {
-        if (target.cardId === cardId) return;
+        // console.log();
+        // if (target.cardId === cardId) return;
         setTarget({ boardId, cardId })
+        todoList.forEach(element => {
+            if(element.id === cardId){
+                element.isDraging = true;
+                console.log(cardId);
+            } else {
+                element.isDraging = false;
+            }
+
+        });
     }
     console.log(target);
 
@@ -221,6 +234,9 @@ const TodoSec = () => {
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
+                            {
+                                data.isDraging ? <BorderCompo/> : null
+                            }
                         </div>)
                     }
                     {
@@ -276,6 +292,9 @@ const TodoSec = () => {
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
+                            {
+                                data.isDraging ? <BorderCompo/> : null
+                            }
                         </div>)
                     }
                     {
@@ -324,6 +343,9 @@ const TodoSec = () => {
                                 </div>
                             </div>
                             <p className='p-2'>{data.text}</p>
+                            {
+                                data.isDraging ? <BorderCompo/> : null
+                            }
                         </div>)
                     }
                     {
