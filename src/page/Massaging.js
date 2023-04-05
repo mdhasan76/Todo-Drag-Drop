@@ -35,7 +35,7 @@ const Massaging = () => {
         console.log("Get firebase Data");
         const q = query(
             collection(db, "chat"),
-            orderBy("createdAt"),
+            orderBy("createdAt", 'desc'),
             limit(30)
         );
         const data = onSnapshot(q, (res) => {
@@ -44,7 +44,8 @@ const Massaging = () => {
                 allMessage.push({ ...el.data(), id: el.id });
             })
             // console.log(res);
-            setAllMessage(allMessage);
+            const revData = allMessage.reverse();
+            setAllMessage(revData);
         })
         return () => data;
     }, []);
