@@ -4,6 +4,8 @@ import { BsThreeDots } from "react-icons/bs";
 import { AiFillEdit } from "react-icons/ai";
 import { MdDelete } from "react-icons/md";
 import { v4 as uuidv4 } from 'uuid';
+// import {addDoc, collection, getFirestore} from "firebase/firestore";
+// import app from '../firebase/firebase.config';
 
 const TodoSec = () => {
     const [todoInput, setTodoInput] = useState("");
@@ -28,6 +30,27 @@ const TodoSec = () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
     }, []);
+
+    // const DB =  getFirestore(app);
+    // const todos = collection(DB, "todos")
+    // const pushToDB = async (val) =>{
+
+    //     //way 1
+    //     // try{
+    //     //     const doc = await addDoc(todos, val);
+    //     // }
+    //     // catch(err) {
+    //     //     console.log(err);
+    //     // }
+
+    //     //way 2
+    //     addDoc(todos, val)
+    //     .then(res => {
+    //         console.log(res);
+    //     }).catch(err => console.log(err));
+
+    //     console.log();
+    // }
 
     const handleClickOutside = (event) => {
         if (inputRef.current && !inputRef.current.contains(event.target)) {
@@ -155,11 +178,11 @@ const TodoSec = () => {
 
         s_cIndex = todoList.findIndex(el => el.id === cardId);
         if (s_cIndex < 0) return;
-        s_bIndex = todoList.findIndex(el => el.id === boardId);
+        // s_bIndex = todoList.findIndex(el => el.id === boardId);
         // if (s_bIndex < 0) return;
         t_cIndex = todoList.findIndex(el => el.id === target.cardId);
         if (t_cIndex < 0) return;
-        t_bIndex = todo.findIndex(el => el.id === boardId);
+        // t_bIndex = todo.findIndex(el => el.id === boardId);
         const tempList = [...todoList]
         const sourceCard = todoList.find(el => el.id === cardId);
         sourceCard.category = target.boardId;

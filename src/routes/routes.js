@@ -4,6 +4,7 @@ import Home from "../page/Home";
 import Login from "../page/Login";
 import SignUp from "../page/SignUp";
 import PrivateRoute from "./PrivateRoute";
+import Massaging from "../page/Massaging";
 
 export const router = createBrowserRouter([
     {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
             {
                 path: "/register",
                 element: <SignUp/>
+            },
+            {
+                path: "/massenger",
+                element: <PrivateRoute><Massaging/></PrivateRoute>
             }
         ]
     }
